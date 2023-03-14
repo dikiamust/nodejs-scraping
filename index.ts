@@ -34,12 +34,15 @@ const main = async () => {
     };
 
     const bookPods = Array.from(document.querySelectorAll(".product_pod"));
-    const data = bookPods.map((book: any) => ({
+    const data = bookPods.map((book: HTMLElement) => ({
       title: book.querySelector("h3 a").getAttribute("title"),
-      price: convertPrice(book.querySelector(".price_color").innerText),
+      price: convertPrice(
+        (book.querySelector(".price_color") as HTMLElement).innerText
+      ),
       imgSrc: url + book.querySelector("img").getAttribute("src"),
       rating: convertRating(book.querySelector(".star-rating").classList[1]),
     }));
+
     return data;
   }, url);
 
@@ -47,12 +50,16 @@ const main = async () => {
 
   await browser.close();
 
-  fs.writeFile("result.json", JSON.stringify(bookData), (err: any) => {
-    if (err) throw err;
-    console.log(
-      `result: ${bookData.length} pieces of data successfully saved!`
-    );
-  });
+  fs.writeFile(
+    "result.json",
+    JSON.stringify(bookData),
+    (err: NodeJS.ErrnoException | null) => {
+      if (err) throw err;
+      console.log(
+        `result: ${bookData.length} pieces of data successfully saved!`
+      );
+    }
+  );
 };
 
 main();
